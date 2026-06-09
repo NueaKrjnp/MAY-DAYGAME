@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>✈️ Mayday! Line of Sight</title>
+    <title>✈️ Mayday! Board Game Table</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Sarabun:wght@300;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&family=Orbitron:wght@500;900&display=swap');
 
         * {
             box-sizing: border-box;
@@ -14,271 +14,344 @@
         }
 
         body {
-            font-family: 'Sarabun', sans-serif;
-            background: radial-gradient(circle at center, #1a1c23 0%, #0d0e12 100%);
-            color: #e2e8f0;
+            font-family: 'Chakra Petch', sans-serif;
+            background: #11141a;
+            color: #fff;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
-            overflow-x: hidden;
+            overflow: hidden;
+            padding: 10px;
         }
 
         h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 2.8rem;
-            font-weight: 700;
-            color: #00f2fe;
-            text-shadow: 0 0 20px rgba(0, 242, 254, 0.6);
-            margin-bottom: 30px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            font-size: 2rem;
+            color: #ff3366;
+            text-shadow: 0 0 10px rgba(255, 51, 102, 0.5);
+            margin-bottom: 10px;
+            z-index: 10;
         }
 
         .container {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
             width: 100%;
-            max-width: 450px;
-        }
-
-        .box {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-top: 3px solid #00f2fe;
+            max-width: 400px;
+            background: rgba(30, 35, 45, 0.9);
+            border: 2px solid #3b82f6;
             border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s ease;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            z-index: 10;
         }
 
-        .box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 242, 254, 0.15);
-            border-color: rgba(0, 242, 254, 0.4);
-        }
-
-        h3 {
-            font-size: 1.2rem;
-            color: #94a3b8;
+        .box h3 {
             margin-bottom: 15px;
-            font-weight: 500;
-            letter-spacing: 0.5px;
+            color: #3b82f6;
+            font-size: 1.2rem;
         }
 
         label {
             display: block;
             font-size: 0.9rem;
-            color: #64748b;
-            margin-top: 15px;
+            color: #a0aec0;
+            margin-top: 10px;
             margin-bottom: 5px;
-            text-align: left;
         }
 
         input, select {
             width: 100%;
-            padding: 14px 18px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+            padding: 12px;
+            background: #1a202c;
+            border: 1px solid #4a5568;
+            border-radius: 8px;
             color: #fff;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            margin-bottom: 15px;
             outline: none;
-        }
-
-        input:focus, select:focus {
-            border-color: #00f2fe;
-            box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
-            background: rgba(15, 23, 42, 0.9);
         }
 
         button {
             width: 100%;
-            padding: 14px;
-            margin-top: 20px;
-            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            padding: 12px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
             border: none;
-            border-radius: 10px;
-            color: #0f172a;
-            font-size: 1rem;
-            font-weight: 700;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+            font-size: 1rem;
+            transition: 0.2s;
         }
 
         button:hover {
             transform: scale(1.02);
-            box-shadow: 0 6px 20px rgba(0, 242, 254, 0.5);
-            filter: brightness(1.1);
+            filter: brightness(1.2);
         }
 
-        button.btn-join {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        .btn-join {
+            background: linear-gradient(135deg, #10b981, #047857);
         }
 
-        button.btn-join:hover {
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
-        }
-
-        /* --- หน้าจอห้องเกม --- */
+        /* ==================== SCREEN GAME (โต๊ะบอร์ดเกม) ==================== */
         #game-screen {
-            width: 100%;
-            max-width: 800px;
-            background: rgba(22, 28, 45, 0.8);
-            border-top: 3px solid #f43f5e;
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            background: radial-gradient(circle, #1a2436 0%, #0d131a 100%);
         }
 
-        .room-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-
-        #room-display {
-            font-family: 'Orbitron', sans-serif;
-            color: #f43f5e;
-            font-size: 1.5rem;
-            text-shadow: 0 0 10px rgba(244, 63, 94, 0.4);
-        }
-
-        .badge-role {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 6px 16px;
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .player-list-box {
-            background: rgba(15, 23, 42, 0.5);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .player-item {
-            padding: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .player-item:last-child {
-            border-bottom: none;
-        }
-
-        /* --- แผนที่และปุ่มควบคุม --- */
-        .grid-map {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding: 15px;
-            background: #0b0f19;
-            border-radius: 12px;
-            margin: 20px 0;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .map-tile {
-            min-width: 50px;
-            height: 50px;
-            background: #1e293b;
-            border-radius: 8px;
+        /* โต๊ะเกมวงรีตรงกลาง */
+        .game-table {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 75vw;
+            height: 50vh;
+            background: radial-gradient(circle, #1e3a5f 0%, #112240 100%);
+            border: 8px solid #0a192f;
+            border-radius: 200px; /* ทำให้เป็นวงรีเหมือนโต๊ะโป๊กเกอร์/UNO */
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.8), 0 0 30px rgba(59, 130, 246, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 0.8rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .controls {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .btn-control {
-            margin-top: 0;
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-        }
-
-        #status-display {
+        /* กองการ์ดและข้อมูลเครื่องบินตรงกลางโต๊ะ */
+        .center-deck {
             text-align: center;
-            font-weight: 500;
-            color: #64748b;
-            margin-top: 15px;
+            background: rgba(10, 25, 47, 0.8);
+            padding: 20px;
+            border-radius: 50%;
+            width: 180px;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 3px dashed #00f2fe;
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
+        }
+
+        .plane-icon {
+            font-size: 2.5rem;
+            animation: float 3s ease-in-out infinite;
+            color: #00f2fe;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        /* ตำแหน่งผู้เล่นล้อมรอบโต๊ะ (ตำแหน่งแบบวงกลมรอบหน้าจอ) */
+        .players-circle {
+            position: absolute;
+            width: 95vw;
+            height: 85vh;
+            top: 7.5%;
+            left: 2.5%;
+            pointer-events: none;
+        }
+
+        .player-seat {
+            position: absolute;
+            background: #222b3c;
+            border: 2px solid #4a5568;
+            padding: 10px 15px;
+            border-radius: 12px;
+            width: 140px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        /* แจกตำแหน่งที่นั่งรอบโต๊ะ */
+        .seat-0 { bottom: 20px; left: 50%; transform: translateX(-50%); border-color: #00f2fe; background: #0f172a; } /* ตัวเราเอง อยู่ล่างสุด */
+        .seat-1 { top: 50%; left: 30px; transform: translateY(-50%); } /* ซ้าย */
+        .seat-2 { top: 20px; left: 25%; transform: translateX(-50%); }  /* บนซ้าย */
+        .seat-3 { top: 20px; left: 75%; transform: translateX(-50%); }  /* บนขวา */
+        .seat-4 { top: 50%; right: 30px; transform: translateY(-50%); } /* ขวา */
+
+        .avatar {
+            width: 45px;
+            height: 45px;
+            background: #3b82f6;
+            border-radius: 50%;
+            margin: 0 auto 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .seat-0 .avatar { background: #00f2fe; color: #000; }
+
+        .player-name {
+            font-size: 0.85rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* เรดาร์แผนที่การบิน (แถบยาวด้านบนสุดของจอ) */
+        .top-radar {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(11, 15, 25, 0.9);
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 1px solid #ff3366;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 20;
+            max-width: 90vw;
+        }
+
+        .map-strip {
+            display: flex;
+            gap: 5px;
+            overflow-x: auto;
+            max-width: 500px;
+            padding: 5px;
+        }
+
+        .tile {
+            min-width: 30px;
+            height: 30px;
+            background: #2d3748;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+        }
+
+        .tile.active {
+            background: #ff3366;
+            box-shadow: 0 0 10px #ff3366;
+            font-size: 1rem;
+        }
+
+        /* แผงปุ่มควบคุมด้านล่าง (ปุ่ม Action ยักษ์เหมือน UNO) */
+        .action-panel {
+            position: absolute;
+            bottom: 30px;
+            right: 40px;
+            display: flex;
+            gap: 15px;
+            pointer-events: auto;
+            z-index: 30;
+        }
+
+        .card-btn {
+            width: 100px;
+            height: 140px;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            border: 4px solid white;
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+            font-size: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            cursor: pointer;
+        }
+
+        .card-btn.descend {
+            background: linear-gradient(135deg, #3b82f6, #10b981);
+        }
+
+        .card-btn:hover {
+            transform: translateY(-15px) rotate(-3deg);
+            box-shadow: 0 15px 30px rgba(255,255,255,0.2);
+        }
+
+        /* ข้อมูลห้องมุมซ้ายบน */
+        .room-info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.6);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            border-left: 4px solid #00f2fe;
         }
     </style>
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
 
-    <h1>✈️ Mayday!</h1>
-
-    <div id="lobby-screen" class="container">
-        <div class="box">
-            <h3>🛸 สร้างเซิร์ฟเวอร์ใหม่</h3>
-            <label>ชื่อผู้เล่น</label>
-            <input type="text" id="create-name" placeholder="ระบุชื่อของคุณ...">
-            
-            <label>จำนวนผู้เล่นในห้อง</label>
+    <div id="lobby-screen" style="display: flex; flex-direction: column; gap: 20px;">
+        <h1>✈️ MAYDAY! LINE OF SIGHT</h1>
+        <div class="container box">
+            <h3>สร้างห้องบอร์ดเกม</h3>
+            <label>ชื่อเล่นของคุณ</label>
+            <input type="text" id="create-name" placeholder="ใส่ชื่อ...">
+            <label>จำนวนขาจอย</label>
             <select id="max-players">
                 <option value="4">4 คน</option>
-                <option value="5" selected>5 คน (แนะนำ)</option>
+                <option value="5" selected>5 คน</option>
                 <option value="6">6 คน</option>
             </select>
-            <button onclick="createRoom()">สร้างห้อง (Create)</button>
+            <button onclick="createRoom()">เปิดโต๊ะเล่นเกม 🎲</button>
         </div>
 
-        <div class="box">
-            <h3>🔑 เข้าร่วมเซิร์ฟเวอร์ด้วยรหัส</h3>
-            <label>ชื่อผู้เล่น</label>
-            <input type="text" id="join-name" placeholder="ระบุชื่อของคุณ...">
-            
-            <label>รหัสห้อง 4 หลัก</label>
-            <input type="text" id="room-code-input" placeholder="ใส่รหัสห้อง เช่น 1234">
-            <button class="btn-join" onclick="joinRoom()">เข้าห้อง (Join)</button>
+        <div class="container box">
+            <h3>เข้าร่วมโต๊ะของเพื่อน</h3>
+            <label>ชื่อเล่นของคุณ</label>
+            <input type="text" id="join-name" placeholder="ใส่ชื่อ...">
+            <label>รหัสโต๊ะ 4 หลัก</label>
+            <input type="text" id="room-code-input" placeholder="เช่น 8842">
+            <button class="btn-join" onclick="joinRoom()">นั่งร่วมวงล้อมเสื่อ 🪑</button>
         </div>
     </div>
 
-    <div id="game-screen" class="box container" style="display: none;">
-        <div class="room-header">
-            <h2 id="room-display">ห้องเลขที่: -</h2>
-            <div id="role-display" class="badge-role">กำลังรอคนครบ...</div>
+    <div id="game-screen">
+        
+        <div class="room-info">
+            <div id="room-display" style="font-weight: bold; color: #00f2fe;">ห้อง: ----</div>
+            <div id="role-display" style="color: #a0aec0; margin-top: 5px;">บทบาท: รอแจกการ์ด...</div>
         </div>
 
-        <p id="status-display">⏳ กำลังรอผู้เล่นคนอื่นเข้าร่วม...</p>
-
-        <h3>👥 รายชื่อผู้เล่นในห้อง</h3>
-        <div id="players-list" class="player-list-box"></div>
-
-        <h3>🗺️ เรดาร์แผนที่การบิน</h3>
-        <div id="map-grid" class="grid-map"></div>
-
-        <h3>🎛️ แผงควบคุมระบบการบิน (สำหรับ Pilot)</h3>
-        <div class="controls">
-            <button class="btn-control" onclick="playCard('Climb')">🔺 ไต่ระดับ (Climb)</button>
-            <button class="btn-control" onclick="playCard('Descend')">🔻 ลดระดับ (Descend)</button>
+        <div class="top-radar">
+            <span>📡 แผนที่การบิน:</span>
+            <div id="map-grid" class="map-strip"></div>
         </div>
+
+        <div class="game-table">
+            <div class="center-deck">
+                <div class="plane-icon">✈️</div>
+                <div style="font-size: 0.8rem; color: #a0aec0; margin-top: 5px;">พิกัดเครื่องบิน</div>
+                <div id="plane-status" style="font-weight: bold; color: #00f2fe; font-size: 1.1rem;">ระดับ: -- | ระยะ: --</div>
+            </div>
+        </div>
+
+        <div id="players-circle" class="players-circle">
+            </div>
+
+        <div class="action-panel">
+            <div class="card-btn" onclick="playCard('Climb')">
+                <span style="font-size: 1.5rem;">🔺</span>
+                <span>ไต่ระดับ<br>CLIMB</span>
+            </div>
+            <div class="card-btn descend" onclick="playCard('Descend')">
+                <span style="font-size: 1.5rem;">🔻</span>
+                <span>ลดระดับ<br>DESCEND</span>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -288,14 +361,14 @@
         function createRoom() {
             const playerName = document.getElementById('create-name').value.trim();
             const maxPlayers = document.getElementById('max-players').value;
-            if(!playerName) return alert('กรุณาใส่ชื่อผู้เล่นก่อนครับ');
+            if(!playerName) return alert('ใส่ชื่อก่อนสิครับเพื่อน!');
             socket.emit('createRoom', { playerName, maxPlayers });
         }
 
         function joinRoom() {
             const playerName = document.getElementById('join-name').value.trim();
             const roomCode = document.getElementById('room-code-input').value.trim();
-            if(!playerName || !roomCode) return alert('กรุณากรอกชื่อและรหัสห้องให้ครบครับ');
+            if(!playerName || !roomCode) return alert('กรอกชื่อและรหัสห้องให้ครบนะคุณ');
             socket.emit('joinRoom', { playerName, roomCode });
         }
 
@@ -306,45 +379,60 @@
 
         socket.on('roomCreated', (data) => {
             currentRoomCode = data.roomCode;
-            document.getElementById('lobby-screen').style.display = 'none';
-            document.getElementById('game-screen').style.display = 'block';
-            document.getElementById('room-display').innerText = `ห้องเลขที่: ${data.roomCode}`;
+            initGameView(data.roomCode);
         });
 
+        function initGameView(code) {
+            document.getElementById('lobby-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'block';
+            document.getElementById('room-display').innerText = `ห้องเลขที่: ${code}`;
+        }
+
         socket.on('gameStart', (msg) => {
-            document.getElementById('status-display').innerText = msg;
-            document.getElementById('status-display').style.color = '#10b981';
+            alert('🔥 ' + msg);
         });
 
         socket.on('gameStateUpdate', (data) => {
             document.getElementById('lobby-screen').style.display = 'none';
             document.getElementById('game-screen').style.display = 'block';
             
+            // อัปเดตบทบาทและการแสดงผลตรงกลางโต๊ะ
             if(data.role) {
-                const roleEl = document.getElementById('role-display');
-                roleEl.innerText = `บทบาทของคุณ: ${data.role}`;
-                if(data.role === 'Pilot') roleEl.style.color = '#00f2fe';
-                if(data.role === 'Terrorist') roleEl.style.color = '#f43f5e';
+                document.getElementById('role-display').innerText = `บทบาท: ${data.role}`;
+                document.getElementById('plane-status').innerText = `ระดับ: ${data.planeAltitude} | ระยะ: ${data.planePosition}`;
             }
 
-            const pList = document.getElementById('players-list');
-            pList.innerHTML = '';
-            data.playersList.forEach(p => {
-                pList.innerHTML += `<div class="player-item">🟢 ${p}</div>`;
+            // จัดตำแหน่งเก้าอี้คนเล่นล้อมวง (UNO Style)
+            const circle = document.getElementById('players-circle');
+            circle.innerHTML = '';
+            data.playersList.forEach((player, index) => {
+                // วนลูปแจกคลาสเก้าอี้ seat-0 ถึง seat-4 กระจายรอบวงโต๊ะ
+                const seatClass = `seat-${index % 5}`; 
+                const firstLetter = player.charAt(0).toUpperCase();
+                
+                circle.innerHTML += `
+                    <div class="player-seat ${seatClass}">
+                        <div class="avatar">${firstLetter}</div>
+                        <div class="player-name">${player}</div>
+                    </div>
+                `;
             });
 
+            // แผนที่เรดาร์ด้านบน
             const mapGrid = document.getElementById('map-grid');
             mapGrid.innerHTML = '';
             data.map.forEach((tile, index) => {
-                let text = index;
-                if(index === data.planePosition) text = `✈️ (${data.planeAltitude})`;
-                mapGrid.innerHTML += `<div class="map-tile">${text}</div>`;
+                let isCurrent = (index === data.planePosition);
+                mapGrid.innerHTML += `
+                    <div class="tile ${isCurrent ? 'active' : ''}">
+                        ${isCurrent ? '✈️' : index}
+                    </div>
+                `;
             });
         });
 
         socket.on('gameEvent', (msg) => {
-            alert(msg);
-            document.getElementById('status-display').innerText = msg;
+            alert('📢 เหตุการณ์: ' + msg);
         });
 
         socket.on('errorMsg', (msg) => {
