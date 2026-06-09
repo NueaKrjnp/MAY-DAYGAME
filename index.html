@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>Mayday Server</title>
+    <style>
+        body { font-family: sans-serif; background: #1e1e24; color: #fff; text-align: center; padding: 20px; }
+        .box { background: #2a2a35; padding: 30px; border-radius: 10px; inline-size: 350px; margin: 40px auto; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        input, select { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #00bcd4; border: none; color: white; font-weight: bold; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 5px;}
+        button:hover { background: #0097a7; }
+        .grid { display: flex; overflow-x: auto; padding: 20px; background: #121214; border-radius: 8px; margin: 20px 0; }
+        .tile { min-width: 60px; height: 60px; border: 1px solid #333; margin: 2px; display: flex; justify-content: center; align-items: center; font-size: 11px; background: #222; }
+        .plane { background: #ff4757 !important; font-weight: bold; }
+        .fog { background: #4b4b54; }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+
+    <!-- 🚪 หน้าแรก: เมนูสร้าง/เข้าห้อง -->
+    <div id="lobby-screen">
+        <h1>✈️ Mayday! Line of Sight</h1>
+        
+        <div class="box">
+            <h3>สร้างเซิร์ฟเวอร์ใหม่</h3>
+            <input type="text" id="create-name" placeholder="ชื่อของคุณ">
+            <label>จำนวนผู้เล่นในห้อง:</label>
+            <select id="max-players">
+                <option value="4">4 คน</option>
+                <option value="5" selected>5 คน (แนะนำ)</option>
+                <option value="6">6 คน</option>
+            </select>
+            <button onclick="createRoom()">สร้างห้อง (Create)</button>
+        </div>
+
+        <div class="box">
+            <h3>เข้าร่วมเซิร์ฟเวอร์ด้วยรหัส</h3>
+            <input type="text" id="join-name" placeholder="ชื่อของคุณ">
+            <input type="text" id="room-code-input" placeholder="ใส่รหัสห้อง 4 หลัก">
+            <button onclick="joinRoom()" style="background: #4caf50;">เข้าห้อง (Join)</button>
+        </div>
+    </div>
+
+    <!-- 🎮 หน้าสอง: กระดานเกม (จะซ่อนไว้ตอนแรก) -->
+    <div id="game-screen" style="display: none;">
+        <h2 id="room-display" style="color: #00bcd4;">ห้องเลขที่: -</h2>
+        <h3 id="role-display">กำลังรอคนให้ครบ...</h3>
+        <p id="status-display">-</p>
+
+        <div class="grid" id="map-grid"></div>
+
+        <div id="pilot-controls" style="display:none;">
+            <h3>🃏 เลือกการ์ดการบินของคุณ:</h3>
+            <button onclick="sendAction('Straight')">บินตรง (Straight)</button>
+            <button onclick="sendAction('Climb')">บินสูงขึ้น (Climb)</button>
+            <button onclick="sendAction('Descend')">บินต่ำลง (Descend)</button>
+            <button onclick="sendAction('Landing')" style="background: #2ed573;">ลงจอด (Landing)</button>
+        </div>
+
+        <div class="box" style="width: 100%; max-width: 400px;">
+            <h4>รายชื่อคนในห้อง:</h4>
+            <ul id="players-list" style="text-align: left;"></ul>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        let currentRoomCode = "";
+
+        // ฟังก์ชันสร้างห้อง
+        function createRoom() {
+            const name = document.getElementById('create-name').value;
+            const maxPlayers = document.getElementById('max-players').value;
+            if(!name) return alert("กรุณาใส่ชื่อ!");
+            socket.emit('createRoom', { playerName: name, maxPlayers: maxPlayers });
+        }
+
+        // ฟังก์ชันจอยห้อง
+        function joinRoom() {
+            const name = document.getElementById('join-name').value;
+            const code = document.getElementById('room-code-input').value;
+            if(!name || !code) return alert("กรุณากรอกข้อมูลให้ครบ!");
+            socket.emit('joinRoom', { playerName: name, roomCode: code });
+        }
+
+        // เมื่อสร้างห้องสำเร็จ
+        socket.on('roomCreated', (data) => {
+            currentRoomCode = data.roomCode;
+            switchToGameScreen();
+        });
+
+        // เมื่อเริ่มเกม (คนครบ)
+        socket.on('gameStart', (msg) => {
+            alert(msg);
+        });
+
+        // รับข้อมูลอัปเดตสถานะเกม
+        socket.on('gameStateUpdate', (data) => {
+            switchToGameScreen(); // เผื่อกรณีคนจอยห้อง
+            document.getElementById('room-display').innerText = `ห้องเลขที่: ${currentRoomCode}`;
+            document.getElementById('role-display').innerText = data.role ? `บทบาทของคุณ: ${data.role}` : "🔵 กำลังรอผู้เล่นคนอื่นเข้าห้องให้ครบเพื่อเริ่มสุ่มบทบาท...";
+            document.getElementById('status-display').innerText = `ตำแหน่งเครื่องบิน: ช่องที่ ${data.planePosition} | ความสูง: ระดับ ${data.planeAltitude}`;
+
+            // เปิดปุ่มให้เฉพาะนักบิน
+            document.getElementById('pilot-controls').style.display = data.role === 'Pilot' ? 'block' : 'none';
+
+            // อัปเดตรายชื่อคนในห้อง
+            const list = document.getElementById('players-list');
+            list.innerHTML = "";
+            data.playersList.forEach(p => {
+                const li = document.createElement('li');
+                li.innerText = p;
+                list.appendChild(li);
+            });
+
+            // วาดแผนที่
+            const grid = document.getElementById('map-grid');
+            grid.innerHTML = '';
+            data.map.forEach((tile, index) => {
+                const div = document.createElement('div');
+                div.className = 'tile';
+                div.innerText = index;
+
+                if (index === data.planePosition) {
+                    div.classList.add('plane');
+                    div.innerText = `✈️ Lv.${data.planeAltitude}`;
+                } else if (tile && tile.type === '?') {
+                    div.classList.add('fog');
+                    div.innerText = '?';
+                }
+                grid.appendChild(div);
+            });
+        });
+
+        socket.on('gameEvent', (msg) => alert(msg));
+        socket.on('errorMsg', (msg) => alert(msg));
+
+        function sendAction(cardType) {
+            socket.emit('playFlightCard', { roomCode: currentRoomCode, cardType: cardType });
+        }
+
+        function switchToGameScreen() {
+            document.getElementById('lobby-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
